@@ -1,0 +1,524 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Right-Hand Rule Vector Lab | SmartMathPro</title>
+  <style>
+    :root{
+      --sky:#39BDFF; --sky2:#EAF8FF; --blue:#087AB8; --ink:#17344D; --muted:#5E7688;
+      --line:#CFE8F7; --card:#FFFFFF; --bg:#F7FCFF; --yellow:#FFE88C; --pink:#FF6FB2;
+      --green:#3CCB8C; --red:#FF7373; --purple:#7A67F8;
+      --shadow:0 10px 28px rgba(29,94,140,.10);
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif;background:linear-gradient(180deg,#F8FDFF 0%,#EEF9FF 100%);color:var(--ink)}
+    .wrap{max-width:860px;margin:0 auto;padding:16px}
+    .hero{background:linear-gradient(135deg,#39BDFF 0%,#6CD6FF 100%);border-radius:28px;padding:22px 22px 18px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+    .hero:before,.hero:after{content:"";position:absolute;border-radius:999px;background:rgba(255,255,255,.16)}
+    .hero:before{width:180px;height:180px;right:-35px;top:-60px}
+    .hero:after{width:110px;height:110px;right:120px;bottom:-46px}
+    .badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.65);color:#08527B;font-weight:800;padding:7px 12px;border-radius:999px;font-size:12px;position:relative}
+    h1{margin:10px 0 8px;font-size:clamp(28px,5vw,38px);line-height:1.18;color:#083B5E;position:relative}
+    .hero p{margin:0;color:#0A4F78;line-height:1.75;position:relative}
+    .card{background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow);border-radius:24px;padding:16px;margin-top:16px}
+    .grid{display:grid;grid-template-columns:1.15fr .85fr;gap:16px;align-items:start}
+    canvas{width:100%;height:auto;display:block;background:radial-gradient(circle at top,#F9FDFF 0%,#EDF8FF 100%);border:1px solid var(--line);border-radius:20px}
+    .section-title{font-size:16px;font-weight:900;color:var(--blue);margin:0 0 10px}
+    .sub{color:var(--muted);font-size:13px;line-height:1.7;margin:6px 0 0}
+    .toolrow{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}
+    .btn{appearance:none;border:none;border-radius:14px;padding:11px 14px;font:inherit;font-weight:800;cursor:pointer;transition:.18s transform,.18s background,.18s border-color;box-shadow:none}
+    .btn:hover{transform:translateY(-1px)}
+    .btn.primary{background:var(--blue);color:white}
+    .btn.secondary{background:#EAF7FF;color:var(--blue);border:1px solid #B9E3F7}
+    .btn.ghost{background:#FFF;color:var(--ink);border:1px solid #D5EAF5}
+    .mini-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .panel{border:1px solid var(--line);border-radius:18px;padding:14px;background:#FBFEFF}
+    .vector-card{border:1px solid #D6EAF6;border-radius:18px;padding:12px;background:white}
+    .vector-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+    .dot{width:12px;height:12px;border-radius:50%}
+    .dot.a{background:#2E9CFF}.dot.b{background:#FFB020}.dot.c{background:var(--pink)}
+    .vector-head strong{font-size:15px}
+    .slider-group{display:grid;gap:8px}
+    .row{display:grid;grid-template-columns:26px 1fr 44px;align-items:center;gap:8px}
+    .axis-tag{width:26px;height:26px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:900;color:white;font-size:13px}
+    .axis-x{background:#FF6A6A}.axis-y{background:#33C480}.axis-z{background:#8B7CFF}
+    input[type=range]{width:100%;accent-color:var(--blue)}
+    .num{background:#F0F9FF;border:1px solid #D6EDF9;border-radius:10px;padding:5px 0;text-align:center;font-weight:800;color:#21506C;font-size:13px}
+    .formula{background:#F5FCFF;border:1px solid #D9EEF9;border-radius:18px;padding:14px;line-height:1.9;font-size:14px;color:#21455B}
+    .formula code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;background:white;padding:1px 6px;border-radius:8px;border:1px solid #DCECF6}
+    .result-box{background:linear-gradient(180deg,#FFF8FB 0%,#FFF 100%);border:1px solid #F7C7DE;border-radius:18px;padding:14px}
+    .result-main{font-size:22px;font-weight:900;color:#A01E64}
+    .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+    .chip{padding:7px 10px;border-radius:999px;font-size:12px;font-weight:800;background:#EEF8FF;color:#246283;border:1px solid #D0EAF7}
+    .chip.c{background:#FFF1F8;color:#9D2763;border-color:#F6C9DE}
+    .legend{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}
+    .legend span{display:inline-flex;align-items:center;gap:7px;font-size:12px;color:#416172;font-weight:700}
+    .sw{width:14px;height:4px;border-radius:999px;display:inline-block}
+    details{border:1px solid var(--line);border-radius:18px;padding:0;background:white;overflow:hidden}
+    summary{cursor:pointer;list-style:none;padding:14px 16px;font-weight:900;color:var(--blue);background:#F7FCFF}
+    summary::-webkit-details-marker{display:none}
+    .details-body{padding:0 16px 14px;color:#315567;line-height:1.8;font-size:14px}
+    .hint{background:#FFFBE9;border:1px solid #F1E0A7;color:#7A6110;border-radius:16px;padding:12px 14px;font-size:13px;line-height:1.75}
+    .kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:10px}
+    .kpi{border:1px solid #D8EDF8;background:#F7FCFF;border-radius:16px;padding:12px;text-align:center}
+    .kpi b{display:block;font-size:20px;color:var(--blue)}
+    .footer-note{text-align:center;color:#6F8798;font-size:12px;line-height:1.7;margin:18px 0 4px}
+
+    .hand-card{margin-top:12px;border:1px solid #D8ECF8;background:linear-gradient(180deg,#FFFDF6 0%,#FFFFFF 100%);border-radius:18px;padding:14px}
+    .hand-wrap{display:grid;grid-template-columns:190px 1fr;gap:12px;align-items:center}
+    .hand-svg{width:100%;height:auto;display:block;background:#FFF7DA;border:1px solid #F1E1A0;border-radius:16px;padding:6px}
+    .hand-caption{display:grid;gap:8px}
+    .hand-line{font-size:13px;line-height:1.7;color:#415869;background:#F8FCFF;border:1px solid #DDECFA;border-radius:12px;padding:8px 10px}
+    .hand-line b{color:#0A79B4}
+    .hand-line.pink b{color:#B0256F}
+    .hand-note{font-size:12px;color:#7A6110;line-height:1.7}
+    .visual-flex{display:grid;grid-template-columns:minmax(0,1fr) 250px;gap:12px;align-items:start;margin-top:8px}
+    .visual-left{min-width:0}
+    .visual-right{min-width:0}
+    .hand-card.side{margin-top:0;height:100%}
+
+    .modal-backdrop{position:fixed;inset:0;background:rgba(10,27,38,.56);display:flex;align-items:center;justify-content:center;padding:18px;z-index:50}
+    .modal-backdrop.hidden{display:none}
+    .modal-card{width:min(760px,100%);background:#fff;border-radius:24px;box-shadow:0 24px 60px rgba(11,36,53,.28);padding:22px;border:1px solid #D7EBF8}
+    .modal-card h2{margin:0 0 8px;color:#13405D;font-size:28px}
+    .modal-card p{margin:0;color:#4A687C;line-height:1.75}
+    .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:16px 0}
+    .step{border:1px solid #DDEDF8;background:#F8FCFF;border-radius:18px;padding:14px}
+    .step b{display:block;color:#0D6EA8;font-size:15px;margin-bottom:6px}
+    .step span{display:block;color:#4B6677;font-size:14px;line-height:1.65}
+    .mini-hand{margin:14px 0;padding:14px;border-radius:18px;background:linear-gradient(180deg,#FFF9E9 0%,#FFF 100%);border:1px solid #F2E0A6;display:grid;grid-template-columns:200px 1fr;gap:14px;align-items:center}
+    .mini-hand svg{width:100%;height:auto;display:block}
+    .modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:14px}
+
+    @media (max-width:760px){.grid{grid-template-columns:1fr}.mini-grid{grid-template-columns:1fr}.kpi-grid{grid-template-columns:1fr}.hand-wrap{grid-template-columns:1fr}.visual-flex{grid-template-columns:1fr}.steps{grid-template-columns:1fr}.mini-hand{grid-template-columns:1fr}.wrap{padding:12px}.hero{padding:18px}.card{padding:14px}}
+  </style>
+</head>
+<body>
+  <div class="modal-backdrop" id="introModal" aria-hidden="false">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="introTitle">
+      <h2 id="introTitle">วิธีใช้กฎมือขวา</h2>
+      <p>ก่อนเล่น ลองจำหลักง่าย ๆ ของการหา <b>A × B</b> ด้วยกฎมือขวา:</p>
+      <div class="steps">
+        <div class="step"><b>1) นิ้วชี้ = A</b><span>หันนิ้วชี้ของมือขวาไปตามทิศของเวกเตอร์ A</span></div>
+        <div class="step"><b>2) งอนิ้ว = B</b><span>งอนิ้วจาก A ไปหา B โดยใช้มุมที่เล็กกว่า</span></div>
+        <div class="step"><b>3) นิ้วโป้ง = A × B</b><span>นิ้วโป้งที่ตั้งขึ้นจะชี้ทิศของผลลัพธ์ครอสเวกเตอร์</span></div>
+      </div>
+      <div class="mini-hand">
+        <svg viewBox="0 0 220 220" aria-label="ภาพอธิบายกฎมือขวา">
+          <rect x="0" y="0" width="220" height="220" rx="18" fill="#FFF7DA"/>
+          <path d="M110 180 C105 165,100 148,100 135 L100 84 C100 76,106 70,114 70 C122 70,128 76,128 84 L128 115 L137 115 L137 52 C137 43,144 36,153 36 C162 36,169 43,169 52 L169 118 L178 118 L178 64 C178 55,185 48,194 48 C203 48,210 55,210 64 L210 132 C210 158,196 176,176 184 C160 190,141 189,127 184 L110 180 Z" fill="#FFD9B3" stroke="#D29A68" stroke-width="4"/>
+          <path d="M128 115 L128 72 C128 64,122 58,114 58 C106 58,100 64,100 72 L100 132" fill="none" stroke="#D29A68" stroke-width="4"/>
+          <path d="M100 132 C92 123,80 119,68 122 C55 126,44 135,40 148 C35 165,45 182,61 187 C73 191,89 188,98 180" fill="#FFD9B3" stroke="#D29A68" stroke-width="4"/>
+          <path d="M117 143 C132 142,145 136,153 126" fill="none" stroke="#D29A68" stroke-width="4" stroke-linecap="round"/>
+          <path d="M117 155 C136 154,151 147,162 137" fill="none" stroke="#D29A68" stroke-width="4" stroke-linecap="round"/>
+          <path d="M141 30 L141 95" stroke="#2E9CFF" stroke-width="7" stroke-linecap="round"/>
+          <polygon points="141,18 133,34 149,34" fill="#2E9CFF"/>
+          <path d="M153 126 C169 121,188 124,203 136" fill="none" stroke="#FFB020" stroke-width="7" stroke-linecap="round"/>
+          <polygon points="209,141 196,130 194,146" fill="#FFB020"/>
+          <path d="M98 150 C78 146,58 149,39 163" fill="none" stroke="#FF6FB2" stroke-width="7" stroke-linecap="round"/>
+          <polygon points="31,168 47,170 40,156" fill="#FF6FB2"/>
+          <text x="150" y="26" font-size="12" font-weight="700" fill="#2E9CFF">นิ้วชี้ = A</text>
+          <text x="160" y="120" font-size="12" font-weight="700" fill="#D88300">งอนิ้ว = B</text>
+          <text x="19" y="154" font-size="12" font-weight="700" fill="#B0256F">โป้ง = A×B</text>
+        </svg>
+        <div>
+          <p><b>จำให้สั้น:</b> ชี้ A → งอไป B → โป้งคือ A × B</p>
+          <p>ถ้า A กับ B ขนานกัน หรือเวกเตอร์ใดเวกเตอร์หนึ่งเป็นศูนย์ จะได้ <b>A × B = 0</b></p>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn secondary" id="closeIntroSecondary">ปิดคำอธิบาย</button>
+        <button class="btn" id="closeIntroPrimary">เริ่มเล่น</button>
+      </div>
+    </div>
+  </div>
+  <div class="wrap">
+    <section class="hero">
+      <div class="badge">✋ SMARTMATHPRO · PHYSICS / MATH LAB</div>
+      <h1>กฎมือขวา: หาผลลัพธ์ของเวกเตอร์</h1>
+      <p>ลองปรับเวกเตอร์ <b>A</b> และ <b>B</b> ด้วยการเลื่อนค่า หรือกดตัวอย่างสำเร็จรูป เพื่อดูทิศทางและค่าของ <b>A × B</b> ได้ทันที เหมาะสำหรับฝึกเข้าใจกฎมือขวาและการคูณเวกเตอร์แบบครอสโปรดักต์</p>
+    </section>
+
+    <section class="card grid">
+      <div>
+        <h2 class="section-title">พื้นที่จำลองเวกเตอร์ 3 มิติ</h2>
+        <canvas id="scene" width="820" height="560" aria-label="ภาพจำลองเวกเตอร์ 3 มิติ"></canvas>
+        <div class="legend">
+          <span><i class="sw" style="background:#2E9CFF"></i> เวกเตอร์ A</span>
+          <span><i class="sw" style="background:#FFB020"></i> เวกเตอร์ B</span>
+          <span><i class="sw" style="background:#FF6FB2"></i> ผลลัพธ์ A × B</span>
+          <span><i class="sw" style="background:#7F8FA0"></i> แกนพิกัด</span>
+        </div>
+
+        <div class="toolrow">
+          <button class="btn secondary" id="toggleResultBtn">ซ่อนผลลัพธ์</button>
+          <button class="btn secondary" id="randomBtn">สุ่มเวกเตอร์</button>
+          <button class="btn secondary" id="resetBtn">รีเซ็ต</button>
+          <button class="btn secondary" id="openIntroBtn">วิธีใช้กฎมือขวา</button>
+        </div>
+        <p class="sub">หมุนมุมมองด้วยแถบเลื่อนด้านขวา เพื่อดูทิศทางเวกเตอร์ให้ชัดขึ้น</p>
+      </div>
+
+      <div>
+        <div class="panel">
+          <h2 class="section-title">ตั้งค่าเวกเตอร์</h2>
+          <div class="mini-grid">
+            <div class="vector-card">
+              <div class="vector-head"><div style="display:flex;gap:8px;align-items:center"><span class="dot a"></span><strong>เวกเตอร์ A</strong></div><code id="aText">(1,0,0)</code></div>
+              <div class="slider-group">
+                <div class="row"><div class="axis-tag axis-x">x</div><input id="ax" type="range" min="-3" max="3" step="1" value="1"><div class="num" id="axv">1</div></div>
+                <div class="row"><div class="axis-tag axis-y">y</div><input id="ay" type="range" min="-3" max="3" step="1" value="0"><div class="num" id="ayv">0</div></div>
+                <div class="row"><div class="axis-tag axis-z">z</div><input id="az" type="range" min="-3" max="3" step="1" value="0"><div class="num" id="azv">0</div></div>
+              </div>
+            </div>
+
+            <div class="vector-card">
+              <div class="vector-head"><div style="display:flex;gap:8px;align-items:center"><span class="dot b"></span><strong>เวกเตอร์ B</strong></div><code id="bText">(0,1,0)</code></div>
+              <div class="slider-group">
+                <div class="row"><div class="axis-tag axis-x">x</div><input id="bx" type="range" min="-3" max="3" step="1" value="0"><div class="num" id="bxv">0</div></div>
+                <div class="row"><div class="axis-tag axis-y">y</div><input id="by" type="range" min="-3" max="3" step="1" value="1"><div class="num" id="byv">1</div></div>
+                <div class="row"><div class="axis-tag axis-z">z</div><input id="bz" type="range" min="-3" max="3" step="1" value="0"><div class="num" id="bzv">0</div></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="toolrow" style="margin-top:12px">
+            <button class="btn ghost preset" data-a="1,0,0" data-b="0,1,0">i × j</button>
+            <button class="btn ghost preset" data-a="0,1,0" data-b="0,0,1">j × k</button>
+            <button class="btn ghost preset" data-a="0,0,1" data-b="1,0,0">k × i</button>
+            <button class="btn ghost preset" data-a="0,1,0" data-b="1,0,0">j × i</button>
+            <button class="btn ghost preset" data-a="1,1,0" data-b="1,0,1">ตัวอย่างผสม</button>
+            <button class="btn ghost preset" data-a="1,0,0" data-b="2,0,0">ขนานกัน</button>
+          </div>
+
+          <div class="panel" style="margin-top:12px;background:#FCFEFF">
+            <h3 class="section-title" style="margin-bottom:8px">มุมมอง</h3>
+            <div class="row"><div class="axis-tag" style="background:#1A8EE0;width:26px">↔</div><input id="yaw" type="range" min="-180" max="180" step="1" value="35"><div class="num" id="yawv">35°</div></div>
+            <div class="row"><div class="axis-tag" style="background:#1A8EE0;width:26px">↕</div><input id="pitch" type="range" min="-80" max="80" step="1" value="18"><div class="num" id="pitchv">18°</div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card grid" style="grid-template-columns:1fr .92fr">
+      <div>
+        <h2 class="section-title">ผลลัพธ์และวิธีคิด</h2>
+        <div class="result-box">
+          <div class="result-main" id="crossText">A × B = (0, 0, 1)</div>
+          <div id="directionText" class="sub" style="margin-top:8px;color:#7E3562;font-weight:800">ทิศทางชี้ไปตามแกน z บวก</div>
+          <div class="chips">
+            <div class="chip">|A| = <span id="magA">1.00</span></div>
+            <div class="chip">|B| = <span id="magB">1.00</span></div>
+            <div class="chip c">|A × B| = <span id="magC">1.00</span></div>
+            <div class="chip">θ ≈ <span id="thetaText">90.0°</span></div>
+          </div>
+        </div>
+        <div class="formula" style="margin-top:12px">
+          <div><b>สูตร:</b> <code>A × B = (a<sub>2</sub>b<sub>3</sub> − a<sub>3</sub>b<sub>2</sub>, a<sub>3</sub>b<sub>1</sub> − a<sub>1</sub>b<sub>3</sub>, a<sub>1</sub>b<sub>2</sub> − a<sub>2</sub>b<sub>1</sub>)</code></div>
+          <div id="workText" style="margin-top:8px"></div>
+        </div>
+        <div class="hint" style="margin-top:12px">
+          <b>กฎมือขวาแบบจำง่าย:</b> วางนิ้วชี้ไปตามเวกเตอร์ <b>A</b> แล้วงอนิ้วไปทางเวกเตอร์ <b>B</b> นิ้วโป้งจะชี้ทิศของ <b>A × B</b><br>
+          ถ้าสลับลำดับเป็น <b>B × A</b> ทิศจะตรงข้ามทันที
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-title">สรุปเร็ว</h2>
+        <div class="kpi-grid">
+          <div class="kpi"><span>ความสัมพันธ์</span><b id="relationText">ตั้งฉาก</b></div>
+          <div class="kpi"><span>สถานะผลลัพธ์</span><b id="zeroText">ไม่เป็นศูนย์</b></div>
+          <div class="kpi"><span>ทิศใกล้เคียง</span><b id="axisText">+z</b></div>
+        </div>
+
+        <details style="margin-top:12px" open>
+          <summary>ดูแนวคิดสำคัญ</summary>
+          <div class="details-body">
+            <ul style="margin:8px 0 0 18px;padding:0">
+              <li>ถ้าเวกเตอร์ <b>A</b> และ <b>B</b> ขนานกัน หรือหนึ่งในสองเป็นเวกเตอร์ศูนย์ ⇒ <b>A × B = 0</b></li>
+              <li>ขนาดของ <b>A × B</b> คือ <b>|A||B|sinθ</b> จึงมากสุดเมื่อทำมุมกัน 90°</li>
+              <li>ผลลัพธ์ของครอสโปรดักต์จะตั้งฉากกับทั้ง <b>A</b> และ <b>B</b></li>
+            </ul>
+          </div>
+        </details>
+        <details style="margin-top:12px">
+          <summary>ไอเดียใช้งานในบทเรียน</summary>
+          <div class="details-body">
+            ใช้สาธิตทิศของเวกเตอร์ในเรื่องแรงแม่เหล็ก โมเมนต์ ทิศของพื้นที่เชิงเวกเตอร์ หรือคณิตศาสตร์เรื่องเวกเตอร์สามมิติได้
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <div class="footer-note">Interactive นี้เป็นสื่อการเรียนรู้เบื้องต้นเพื่อช่วยมองภาพกฎมือขวาและครอสโปรดักต์ • ค่าเวกเตอร์เป็นหน่วยสมมติ</div>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('scene');
+    const ctx = canvas.getContext('2d');
+    const controls = ['ax','ay','az','bx','by','bz','yaw','pitch'].reduce((o,id)=>{o[id]=document.getElementById(id);return o;},{});
+    let showResult = true;
+
+    function getA(){return [Number(controls.ax.value),Number(controls.ay.value),Number(controls.az.value)]}
+    function getB(){return [Number(controls.bx.value),Number(controls.by.value),Number(controls.bz.value)]}
+    function cross(a,b){return [a[1]*b[2]-a[2]*b[1], a[2]*b[0]-a[0]*b[2], a[0]*b[1]-a[1]*b[0]]}
+    function dot(a,b){return a[0]*b[0]+a[1]*b[1]+a[2]*b[2]}
+    function mag(v){return Math.hypot(v[0],v[1],v[2])}
+    function fmt(v){return `(${v[0]}, ${v[1]}, ${v[2]})`}
+    function clamp(x,a,b){return Math.max(a,Math.min(b,x))}
+
+    function updateNumbers(){
+      ['ax','ay','az','bx','by','bz'].forEach(id=>document.getElementById(id+'v').textContent=controls[id].value);
+      document.getElementById('yawv').textContent = controls.yaw.value + '°';
+      document.getElementById('pitchv').textContent = controls.pitch.value + '°';
+      document.getElementById('aText').textContent = fmt(getA());
+      document.getElementById('bText').textContent = fmt(getB());
+    }
+
+    function axisName(v){
+      const m = mag(v);
+      if(m < 1e-9) return 'ศูนย์';
+      const abs = v.map(Math.abs);
+      const i = abs.indexOf(Math.max(...abs));
+      const ratio = abs[i]/m;
+      const sign = v[i] >= 0 ? '+' : '-';
+      const names = ['x','y','z'];
+      return ratio > 0.92 ? sign+names[i] : 'ทั่วไป';
+    }
+
+    function relationText(a,b){
+      const da = mag(a), db = mag(b);
+      if(da===0 || db===0) return 'มีศูนย์';
+      const cos = dot(a,b)/(da*db);
+      if(Math.abs(cos) < 0.08) return 'ตั้งฉาก';
+      if(Math.abs(Math.abs(cos)-1) < 0.08) return 'ขนาน';
+      return 'ทำมุมกัน';
+    }
+
+    function directionDescription(v){
+      const name = axisName(v);
+      if(name==='ศูนย์') return 'ผลลัพธ์เป็นเวกเตอร์ศูนย์ เพราะเวกเตอร์ขนานกัน หรือหนึ่งในเวกเตอร์เป็นศูนย์';
+      if(name!=='ทั่วไป'){
+        const axisWord = { '+x':'แกน x บวก', '-x':'แกน x ลบ', '+y':'แกน y บวก', '-y':'แกน y ลบ', '+z':'แกน z บวก', '-z':'แกน z ลบ'}[name];
+        return `ทิศทางชี้ไปตาม${axisWord}`;
+      }
+      return 'ผลลัพธ์เป็นเวกเตอร์ทั่วไปในสามมิติ และตั้งฉากกับ A และ B';
+    }
+
+
+    function dirThai(v){
+      const name = axisName(v);
+      const map = { '+x':'แกน x บวก', '-x':'แกน x ลบ', '+y':'แกน y บวก', '-y':'แกน y ลบ', '+z':'แกน z บวก', '-z':'แกน z ลบ', 'ศูนย์':'เวกเตอร์ศูนย์', 'ทั่วไป':'ทิศทั่วไปในสามมิติ' };
+      return map[name] || 'ทิศทั่วไปในสามมิติ';
+    }
+
+    function updateInfo(){
+      const a = getA(), b = getB(), c = cross(a,b);
+      const ma = mag(a), mb = mag(b), mc = mag(c);
+      let theta = 0;
+      if(ma>0 && mb>0){ theta = Math.acos(clamp(dot(a,b)/(ma*mb),-1,1))*180/Math.PI; }
+      document.getElementById('crossText').textContent = `A × B = ${fmt(c)}`;
+      document.getElementById('directionText').textContent = directionDescription(c);
+      document.getElementById('magA').textContent = ma.toFixed(2);
+      document.getElementById('magB').textContent = mb.toFixed(2);
+      document.getElementById('magC').textContent = mc.toFixed(2);
+      document.getElementById('thetaText').textContent = isFinite(theta) ? theta.toFixed(1)+'°' : '-';
+      document.getElementById('relationText').textContent = relationText(a,b);
+      document.getElementById('zeroText').textContent = mc < 1e-9 ? 'เป็นศูนย์' : 'ไม่เป็นศูนย์';
+      document.getElementById('axisText').textContent = axisName(c);
+      document.getElementById('workText').innerHTML = `จาก A = ${fmt(a)} และ B = ${fmt(b)}<br>
+      x = (${a[1]}×${b[2]}) − (${a[2]}×${b[1]}) = <b>${c[0]}</b><br>
+      y = (${a[2]}×${b[0]}) − (${a[0]}×${b[2]}) = <b>${c[1]}</b><br>
+      z = (${a[0]}×${b[1]}) − (${a[1]}×${b[0]}) = <b>${c[2]}</b>`;
+    }
+
+    function rotatePoint([x,y,z]){
+      const yaw = Number(controls.yaw.value) * Math.PI/180;
+      const pitch = Number(controls.pitch.value) * Math.PI/180;
+      const cy = Math.cos(yaw), sy = Math.sin(yaw);
+      const cp = Math.cos(pitch), sp = Math.sin(pitch);
+      let x1 = x*cy + z*sy;
+      let z1 = -x*sy + z*cy;
+      let y1 = y*cp - z1*sp;
+      let z2 = y*sp + z1*cp;
+      return [x1,y1,z2];
+    }
+
+    function project(v){
+      const [x,y,z] = rotatePoint(v);
+      const scale = 72;
+      const perspective = 1 + z*0.06;
+      return [canvas.width/2 + x*scale*perspective, canvas.height/2 - y*scale*perspective, z];
+    }
+
+    function arrow(from,to,color,label,fingerLabel=''){
+      const [x1,y1] = from, [x2,y2] = to;
+      const ang = Math.atan2(y2-y1,x2-x1);
+      ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = 5;
+      ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
+      const h = 14;
+      ctx.beginPath();
+      ctx.moveTo(x2,y2);
+      ctx.lineTo(x2-h*Math.cos(ang-Math.PI/7), y2-h*Math.sin(ang-Math.PI/7));
+      ctx.lineTo(x2-h*Math.cos(ang+Math.PI/7), y2-h*Math.sin(ang+Math.PI/7));
+      ctx.closePath(); ctx.fill();
+      ctx.font = 'bold 20px system-ui';
+      ctx.fillText(label, x2 + 8, y2 - 8);
+      if(fingerLabel){
+        const mx = x1 + (x2-x1)*0.58;
+        const my = y1 + (y2-y1)*0.58;
+        const padX = 10, boxH = 26;
+        ctx.font = 'bold 13px system-ui';
+        const textW = ctx.measureText(fingerLabel).width;
+        const boxW = textW + padX*2;
+        ctx.save();
+        ctx.fillStyle = 'rgba(255,255,255,.92)';
+        roundRect(mx - boxW/2, my - boxH/2, boxW, boxH, 13);
+        ctx.fill();
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        ctx.fillStyle = color;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(fingerLabel, mx, my+0.5);
+        ctx.restore();
+      }
+    }
+
+    function roundRect(x,y,w,h,r){
+      ctx.beginPath();
+      ctx.moveTo(x+r,y);
+      ctx.arcTo(x+w,y,x+w,y+h,r);
+      ctx.arcTo(x+w,y+h,x,y+h,r);
+      ctx.arcTo(x,y+h,x,y,r);
+      ctx.arcTo(x,y,x+w,y,r);
+      ctx.closePath();
+    }
+
+    function drawGrid(){
+      ctx.save();
+      ctx.strokeStyle = '#E2F0F8';
+      ctx.lineWidth = 1;
+      for(let i=-4;i<=4;i++){
+        let p1 = project([-4,0,i]), p2 = project([4,0,i]);
+        ctx.beginPath(); ctx.moveTo(p1[0],p1[1]); ctx.lineTo(p2[0],p2[1]); ctx.stroke();
+        p1 = project([i,0,-4]); p2 = project([i,0,4]);
+        ctx.beginPath(); ctx.moveTo(p1[0],p1[1]); ctx.lineTo(p2[0],p2[1]); ctx.stroke();
+      }
+      ctx.restore();
+    }
+
+    function drawAxes(){
+      const O = project([0,0,0]);
+      const X = project([3.5,0,0]);
+      const Y = project([0,3.5,0]);
+      const Z = project([0,0,3.5]);
+      arrow(O,X,'#FF7B7B','x');
+      arrow(O,Y,'#4CCF95','y');
+      arrow(O,Z,'#8D7DFF','z');
+      ctx.fillStyle = '#698092'; ctx.font='bold 16px system-ui'; ctx.fillText('O', O[0]+8, O[1]-8);
+    }
+
+    function drawArcBetween(a,b){
+      const O = project([0,0,0]);
+      const pa = project(a), pb = project(b);
+      const ang1 = Math.atan2(pa[1]-O[1], pa[0]-O[0]);
+      const ang2 = Math.atan2(pb[1]-O[1], pb[0]-O[0]);
+      let diff = ang2-ang1;
+      while(diff<=-Math.PI) diff += 2*Math.PI;
+      while(diff>Math.PI) diff -= 2*Math.PI;
+      const r = 52;
+      ctx.save();
+      ctx.strokeStyle = '#7FB6D9';
+      ctx.lineWidth = 2.5;
+      ctx.setLineDash([6,6]);
+      ctx.beginPath(); ctx.arc(O[0],O[1],r,ang1,ang1+diff,diff<0); ctx.stroke();
+      ctx.restore();
+      const endAng = ang1 + diff;
+      const px = O[0] + r*Math.cos(endAng), py = O[1] + r*Math.sin(endAng);
+      ctx.fillStyle = '#7FB6D9';
+      ctx.beginPath(); ctx.moveTo(px,py);
+      ctx.lineTo(px-10*Math.cos(endAng-0.35), py-10*Math.sin(endAng-0.35));
+      ctx.lineTo(px-10*Math.cos(endAng+0.35), py-10*Math.sin(endAng+0.35));
+      ctx.closePath(); ctx.fill();
+      ctx.fillStyle='#5C7E93'; ctx.font='bold 14px system-ui'; ctx.fillText('งอนิ้วจาก A ไป B', O[0]-46, O[1]-60);
+    }
+
+    function draw(){
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      drawGrid();
+      drawAxes();
+      const O = project([0,0,0]);
+      const a = getA(), b = getB(), c = cross(a,b);
+      drawArcBetween(a,b);
+      arrow(O, project(a), '#2E9CFF', 'A', 'นิ้วชี้');
+      arrow(O, project(b), '#FFB020', 'B', 'งอนิ้ว');
+      if(showResult) arrow(O, project(c), '#FF6FB2', 'A×B', 'นิ้วโป้ง');
+      if(mag(c) < 1e-9 && showResult){
+        ctx.fillStyle='#A01E64'; ctx.font='bold 18px system-ui';
+        ctx.fillText('A × B = 0', 24, 36);
+      }
+    }
+
+    function updateAll(){updateNumbers();updateInfo();draw();}
+
+    Object.values(controls).forEach(el=>el.addEventListener('input',updateAll));
+
+    document.getElementById('toggleResultBtn').addEventListener('click',()=>{
+      showResult = !showResult;
+      document.getElementById('toggleResultBtn').textContent = showResult ? 'ซ่อนผลลัพธ์' : 'ดูผลลัพธ์';
+      draw();
+    });
+
+    document.getElementById('resetBtn').addEventListener('click',()=>{
+      controls.ax.value=1; controls.ay.value=0; controls.az.value=0;
+      controls.bx.value=0; controls.by.value=1; controls.bz.value=0;
+      controls.yaw.value=35; controls.pitch.value=18; showResult=true;
+      document.getElementById('toggleResultBtn').textContent='ซ่อนผลลัพธ์';
+      updateAll();
+    });
+
+    const introModal = document.getElementById('introModal');
+    function openIntro(){ introModal.classList.remove('hidden'); introModal.setAttribute('aria-hidden','false'); }
+    function closeIntro(){ introModal.classList.add('hidden'); introModal.setAttribute('aria-hidden','true'); }
+    document.getElementById('openIntroBtn').addEventListener('click', openIntro);
+    document.getElementById('closeIntroPrimary').addEventListener('click', closeIntro);
+    document.getElementById('closeIntroSecondary').addEventListener('click', closeIntro);
+    introModal.addEventListener('click', (e)=>{ if(e.target===introModal) closeIntro(); });
+    window.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeIntro(); });
+
+    document.getElementById('randomBtn').addEventListener('click',()=>{
+      const ids=['ax','ay','az','bx','by','bz'];
+      do{
+        ids.forEach(id=>controls[id].value = Math.floor(Math.random()*7)-3);
+      } while(mag(getA())===0 || mag(getB())===0);
+      updateAll();
+    });
+
+    document.querySelectorAll('.preset').forEach(btn=>btn.addEventListener('click',()=>{
+      const a = btn.dataset.a.split(',').map(Number);
+      const b = btn.dataset.b.split(',').map(Number);
+      [controls.ax.value,controls.ay.value,controls.az.value] = a;
+      [controls.bx.value,controls.by.value,controls.bz.value] = b;
+      updateAll();
+    }));
+
+    let dragging=false,last=null;
+    canvas.addEventListener('pointerdown',e=>{dragging=true; last=[e.clientX,e.clientY]; canvas.setPointerCapture(e.pointerId)});
+    canvas.addEventListener('pointermove',e=>{
+      if(!dragging) return;
+      const dx=e.clientX-last[0], dy=e.clientY-last[1];
+      last=[e.clientX,e.clientY];
+      controls.yaw.value = clamp(Number(controls.yaw.value)+dx*0.6,-180,180);
+      controls.pitch.value = clamp(Number(controls.pitch.value)+dy*0.4,-80,80);
+      updateAll();
+    });
+    canvas.addEventListener('pointerup',()=>dragging=false);
+    canvas.addEventListener('pointerleave',()=>dragging=false);
+
+    updateAll();
+  </script>
+</body>
+</html>
